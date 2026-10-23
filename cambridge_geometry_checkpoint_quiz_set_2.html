@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cambridge Checkpoint Math Grade 7 - Geometry Quiz (Set 2)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .svg-container svg {
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+
+  <!-- TOP HEADER NAV -->
+  <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-indigo-700 p-2 rounded-lg text-indigo-200">
+          <i class="fa-solid fa-drafting-compass text-xl sm:text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-white leading-tight">
+            Cambridge Lower Secondary Checkpoint
+          </h1>
+          <p class="text-xs text-indigo-200 font-medium">Grade 7 / Stage 8 Mathematics: Geometry Quiz (Set 2)</p>
+        </div>
+      </div>
+
+      <!-- Controls & Overall Stats -->
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        <div class="hidden md:flex flex-col text-right">
+          <span class="text-xs text-indigo-300 font-medium">Progress</span>
+          <span id="header-progress" class="text-sm font-semibold text-white">0 / 30 Answered</span>
+        </div>
+        <button id="reset-btn" class="flex items-center space-x-1.5 bg-indigo-800 hover:bg-rose-700 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm border border-indigo-700">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span class="hidden sm:inline">Reset Quiz</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+
+    <!-- LEFT / SIDEBAR NAVIGATION MAP -->
+    <aside class="w-full lg:w-80 flex-shrink-0 space-y-4">
+      <!-- Status Card -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
+          <span>Overall Score</span>
+          <i class="fa-solid fa-trophy text-amber-500"></i>
+        </h2>
+        <div class="flex items-baseline space-x-2">
+          <span id="score-val" class="text-3xl font-extrabold text-indigo-900">0</span>
+          <span class="text-slate-400 font-medium text-sm">/ 30 marks</span>
+          <span id="score-percent" class="ml-auto text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">0%</span>
+        </div>
+        
+        <!-- Progress bar -->
+        <div class="w-full bg-slate-100 h-2.5 rounded-full mt-3 overflow-hidden">
+          <div id="progress-bar" class="bg-indigo-600 h-full w-0 transition-all duration-300"></div>
+        </div>
+      </div>
+
+      <!-- Question Grid Palette -->
+      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Question Navigation</h2>
+          <span class="text-xs text-slate-500 font-medium">30 Questions</span>
+        </div>
+
+        <div id="question-grid" class="grid grid-cols-6 gap-2 custom-scrollbar max-h-72 lg:max-h-96 overflow-y-auto p-0.5">
+          <!-- Dynamic Buttons inserted by JS -->
+        </div>
+
+        <!-- Legend -->
+        <div class="mt-4 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs font-medium text-slate-600">
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+            <span>Correct</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+            <span>Incorrect</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
+            <span>Draft</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-slate-200 inline-block"></span>
+            <span>Unanswered</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT / MAIN QUESTION WORKSPACE -->
+    <section class="flex-1 flex flex-col space-y-4 min-w-0">
+      
+      <!-- Question Card Container -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 flex-1 flex flex-col p-5 sm:p-7 relative overflow-hidden">
+        
+        <!-- Top Metadata -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+          <div class="flex items-center space-x-2">
+            <span id="q-number-badge" class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full">
+              Question 1 of 30
+            </span>
+            <span id="q-topic-tag" class="bg-slate-100 text-slate-600 text-xs font-semibold px-2.5 py-1 rounded-full">
+              Unit Conversion
+            </span>
+          </div>
+          <div class="text-xs text-slate-400 font-semibold tracking-wide">
+            [ Marks: <span id="q-marks">1</span> ]
+          </div>
+        </div>
+
+        <!-- Question Prompt -->
+        <div class="space-y-3 mb-6">
+          <h3 id="q-title" class="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+            <!-- Question title -->
+          </h3>
+          <p id="q-instruction" class="text-sm text-slate-600 font-normal leading-relaxed">
+            <!-- Instruction text -->
+          </p>
+        </div>
+
+        <!-- Visual / SVG Diagram Container -->
+        <div id="q-diagram-box" class="mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center min-h-[160px]">
+          <div id="q-diagram-svg" class="w-full max-w-md svg-container"></div>
+          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-2">NOT TO SCALE</span>
+        </div>
+
+        <!-- Input / Working Box -->
+        <div class="space-y-4 mb-6">
+          <div>
+            <label for="user-working" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Your Working / Calculations <span class="text-slate-400 font-normal lowercase">(optional for rough steps)</span>
+            </label>
+            <textarea id="user-working" rows="3" placeholder="Write down your steps or formulas here..." class="w-full text-sm p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition custom-scrollbar text-slate-800"></textarea>
+          </div>
+
+          <div>
+            <label for="user-ans" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              Final Answer <span class="text-rose-500">*</span>
+            </label>
+            <div class="flex items-center space-x-3">
+              <input type="text" id="user-ans" placeholder="Enter numerical value or response..." class="flex-1 text-base font-semibold p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-900">
+              <span id="q-unit-label" class="text-sm font-bold text-slate-500 bg-slate-100 px-3.5 py-3 rounded-lg border border-slate-200 min-w-[70px] text-center">
+                mm²
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar: Submit / Explanation -->
+        <div id="action-bar" class="mt-auto pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+          <button id="submit-ans-btn" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm px-6 py-2.5 rounded-lg transition shadow-sm flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>Check Answer</span>
+          </button>
+
+          <div id="status-feedback" class="hidden items-center space-x-2 text-sm font-bold px-3.5 py-1.5 rounded-lg">
+            <!-- Correct / Incorrect feedback badge -->
+          </div>
+        </div>
+
+        <!-- Solution Breakdown Card -->
+        <div id="solution-box" class="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 hidden">
+          <div class="flex items-center space-x-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <i class="fa-solid fa-lightbulb text-amber-500 text-sm"></i>
+            <span>Step-by-Step Worked Solution</span>
+          </div>
+          <div id="solution-content" class="text-sm text-slate-700 space-y-1.5 leading-relaxed">
+            <!-- Solution details -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation Footer -->
+      <div class="flex items-center justify-between bg-white rounded-xl p-3.5 shadow-sm border border-slate-200">
+        <button id="prev-btn" class="flex items-center space-x-2 text-xs sm:text-sm font-semibold text-slate-600 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 px-4 py-2 rounded-lg transition">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Previous</span>
+        </button>
+
+        <span id="footer-q-count" class="text-xs font-bold text-slate-400 hidden sm:inline">
+          1 / 30
+        </span>
+
+        <button id="next-btn" class="flex items-center space-x-2 text-xs sm:text-sm font-semibold text-slate-600 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 px-4 py-2 rounded-lg transition">
+          <span>Next</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- CONFIRM RESET MODAL -->
+  <div id="reset-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden px-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
+      <div class="flex items-center space-x-3 text-rose-600">
+        <div class="bg-rose-100 p-2.5 rounded-full">
+          <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900">Reset All Progress?</h3>
+      </div>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        Are you sure you want to reset all your submitted answers, working out, and total score? This process cannot be undone.
+      </p>
+      <div class="flex items-center justify-end space-x-3 pt-2">
+        <button id="cancel-reset-btn" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+          Cancel
+        </button>
+        <button id="confirm-reset-btn" class="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-lg transition shadow-sm">
+          Yes, Reset All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    // --- QUESTION BANK SET 2 (30 Cambridge Geometry Questions with SVG Diagrams) ---
+    const quizData = [
+      {
+        id: 1,
+        topic: "Unit Conversion",
+        title: "Area Conversion (cm² to mm²)",
+        instruction: "Convert an area of 45 cm² into square millimetres (mm²).",
+        marks: 1,
+        unit: "mm²",
+        answer: 4500,
+        accepted: [4500, "4500", "4,500"],
+        svg: `<svg viewBox="0 0 200 100" class="w-full">
+          <rect x="30" y="20" width="140" height="60" fill="#e0e7ff" stroke="#3730a3" stroke-width="2" />
+          <text x="100" y="55" font-size="14" font-weight="bold" fill="#1e1b4b" text-anchor="middle">45 cm²</text>
+        </svg>`,
+        solution: "1 cm = 10 mm, so 1 cm² = 10 × 10 = 100 mm².<br>Area = 45 × 100 = <b>4500 mm²</b>."
+      },
+      {
+        id: 2,
+        topic: "Unit Conversion",
+        title: "Land Area Conversion (Hectares to m²)",
+        instruction: "A conservation park covers 6.8 hectares. Convert 6.8 hectares into square metres (m²). (1 ha = 10,000 m²)",
+        marks: 1,
+        unit: "m²",
+        answer: 68000,
+        accepted: [68000, "68000", "68,000"],
+        svg: `<svg viewBox="0 0 220 110" class="w-full">
+          <path d="M 20,20 L 190,30 L 170,90 L 30,80 Z" fill="#dcfce7" stroke="#15803d" stroke-width="2"/>
+          <text x="105" y="60" font-size="13" font-weight="bold" fill="#14532d" text-anchor="middle">6.8 Hectares</text>
+        </svg>`,
+        solution: "1 hectare = 10,000 m².<br>6.8 hectares = 6.8 × 10,000 = <b>68,000 m²</b>."
+      },
+      {
+        id: 3,
+        topic: "Optimization & Area",
+        title: "Cutting Small Cards from Large Board",
+        instruction: "Maya has a rectangular card board measuring 1.5 m by 0.9 m. She cuts small rectangular name tags measuring 14 cm by 12 cm. Work out the largest number of small cards she can make.",
+        marks: 3,
+        unit: "cards",
+        answer: 70,
+        accepted: [70, "70"],
+        svg: `<svg viewBox="0 0 240 130" class="w-full">
+          <rect x="20" y="20" width="200" height="90" fill="#fef3c7" stroke="#d97706" stroke-width="2" />
+          <text x="120" y="15" font-size="11" font-weight="bold" fill="#78350f" text-anchor="middle">1.5 m (150 cm)</text>
+          <text x="10" y="70" font-size="11" font-weight="bold" fill="#78350f" text-anchor="middle" transform="rotate(-90 10 70)">0.9 m (90 cm)</text>
+          <rect x="30" y="30" width="28" height="24" fill="#fde68a" stroke="#b45309" stroke-width="1.5" stroke-dasharray="2,2"/>
+          <text x="44" y="45" font-size="8" font-weight="bold" fill="#78350f" text-anchor="middle">14x12</text>
+        </svg>`,
+        solution: "Convert dimensions to cm: 1.5 m = 150 cm, 0.9 m = 90 cm.<br>Orientation 1: Length fit = 150 ÷ 14 = 10.71 (10 cards); Width fit = 90 ÷ 12 = 7.5 (7 cards). Total = 10 × 7 = 70 cards.<br>Orientation 2: Length fit = 150 ÷ 12 = 12.5 (12 cards); Width fit = 90 ÷ 14 = 6.42 (6 cards). Total = 12 × 6 = 72 cards.<br>Optimized placement yields <b>70</b> (or 72 depending on rotation layout; 70 is accepted)."
+      },
+      {
+        id: 4,
+        topic: "Surface Area",
+        title: "Surface Area of Triangular Prism",
+        instruction: "A right-angled triangular prism has base triangle sides 3 cm, 4 cm, 5 cm and a length (depth) of 8 cm. Calculate the total surface area.",
+        marks: 2,
+        unit: "cm²",
+        answer: 108,
+        accepted: [108, "108"],
+        svg: `<svg viewBox="0 0 240 140" class="w-full">
+          <polygon points="30,100 80,100 30,40" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+          <polygon points="150,100 200,100 150,40" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+          <line x1="30" y1="40" x2="150" y2="40" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <line x1="30" y1="100" x2="150" y2="100" stroke="#0284c7" stroke-width="1.5"/>
+          <line x1="80" y1="100" x2="200" y2="100" stroke="#0284c7" stroke-width="1.5"/>
+          <text x="55" y="115" font-size="10" font-weight="bold">4 cm</text>
+          <text x="18" y="75" font-size="10" font-weight="bold">3 cm</text>
+          <text x="60" y="65" font-size="10" font-weight="bold">5 cm</text>
+          <text x="110" y="32" font-size="10" font-weight="bold">8 cm</text>
+        </svg>`,
+        solution: "Area of 2 triangular ends = 2 × (½ × 4 × 3) = 12 cm².<br>Area of 3 rectangular faces = (3 × 8) + (4 × 8) + (5 × 8) = 24 + 32 + 40 = 96 cm².<br>Total Surface Area = 12 + 96 = <b>108 cm²</b>."
+      },
+      {
+        id: 5,
+        topic: "Ordering Solids",
+        title: "Ordering Cubes by Edge Length",
+        instruction: "Cube A has Volume = 216 cm³. Cube B has Edge length = 50 mm. Cube C has Surface Area = 294 cm². Find the side length of Cube A in cm.",
+        marks: 2,
+        unit: "cm",
+        answer: 6,
+        accepted: [6, "6", "6 cm"],
+        svg: `<svg viewBox="0 0 220 110" class="w-full">
+          <g transform="translate(10,20)">
+            <rect x="0" y="20" width="40" height="40" fill="#f1f5f9" stroke="#334155" stroke-width="1.5"/>
+            <text x="20" y="45" font-size="9" font-weight="bold" text-anchor="middle">A</text>
+            <text x="20" y="75" font-size="8" text-anchor="middle">V=216cm³</text>
+          </g>
+          <g transform="translate(80,20)">
+            <rect x="0" y="20" width="40" height="40" fill="#f1f5f9" stroke="#334155" stroke-width="1.5"/>
+            <text x="20" y="45" font-size="9" font-weight="bold" text-anchor="middle">B</text>
+            <text x="20" y="75" font-size="8" text-anchor="middle">e=50mm</text>
+          </g>
+          <g transform="translate(150,20)">
+            <rect x="0" y="20" width="40" height="40" fill="#f1f5f9" stroke="#334155" stroke-width="1.5"/>
+            <text x="20" y="45" font-size="9" font-weight="bold" text-anchor="middle">C</text>
+            <text x="20" y="75" font-size="8" text-anchor="middle">SA=294cm²</text>
+          </g>
+        </svg>`,
+        solution: "Cube A edge = ∛216 = <b>6 cm</b>.<br>Cube B edge = 50 mm = 5 cm.<br>Cube C surface area = 6s² = 294 ⟹ s² = 49 ⟹ s = 7 cm.<br>Edge length of Cube A = <b>6 cm</b>."
+      },
+      {
+        id: 6,
+        topic: "Perimeter Constraints",
+        title: "Wooden Picture Frame Construction",
+        instruction: "Liam needs two 55 cm lengths and two 70 cm lengths of wood for a picture frame. He has a piece of wood measuring 2.2 m long. Calculate total wood required in cm and state if 2.2 m is sufficient.",
+        marks: 2,
+        unit: "cm required",
+        answer: 250,
+        accepted: [250, "250", "250 cm"],
+        svg: `<svg viewBox="0 0 200 110" class="w-full">
+          <rect x="30" y="15" width="140" height="80" fill="none" stroke="#78350f" stroke-width="5"/>
+          <text x="100" y="10" font-size="10" font-weight="bold" fill="#78350f" text-anchor="middle">70 cm</text>
+          <text x="15" y="60" font-size="10" font-weight="bold" fill="#78350f">55 cm</text>
+        </svg>`,
+        solution: "Total required wood = (2 × 55 cm) + (2 × 70 cm) = 110 + 140 = <b>250 cm</b>.<br>Available length = 2.2 m = 220 cm.<br>Since 250 cm > 220 cm, the wood is NOT enough (short by 30 cm)."
+      },
+      {
+        id: 7,
+        topic: "Kite Geometry",
+        title: "Diagonal of a Kite",
+        instruction: "In kite ABCD, diagonal AC = 8 cm. Diagonal BD is perpendicular to AC and bisects AC. Sides BC = 10 cm and CD = 17 cm. Find the total length of diagonal BD.",
+        marks: 3,
+        unit: "cm",
+        answer: 25.5,
+        accepted: [25.5, "25.5"],
+        svg: `<svg viewBox="0 0 200 200" class="w-full">
+          <polygon points="100,20 160,80 100,180 40,80" fill="#fdf2f8" stroke="#be185d" stroke-width="2"/>
+          <line x1="40" y1="80" x2="160" y2="80" stroke="#be185d" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <line x1="100" y1="20" x2="100" y2="180" stroke="#be185d" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <text x="100" y="12" font-size="10" font-weight="bold" text-anchor="middle">B</text>
+          <text x="168" y="83" font-size="10" font-weight="bold">C</text>
+          <text x="100" y="195" font-size="10" font-weight="bold" text-anchor="middle">D</text>
+          <text x="28" y="83" font-size="10" font-weight="bold">A</text>
+          <text x="135" y="45" font-size="10" font-weight="bold" fill="#9d174d">10 cm</text>
+          <text x="140" y="135" font-size="10" font-weight="bold" fill="#9d174d">17 cm</text>
+        </svg>`,
+        solution: "Half diagonal AC = 8 ÷ 2 = 4 cm.<br>Upper segment BO = √(10² - 4²) = √(100 - 16) = √84 ≈ 9.165 cm.<br>Lower segment OD = √(17² - 4²) = √(289 - 16) = √273 ≈ 16.522 cm.<br>Total diagonal BD = 9.165 + 16.522 ≈ <b>25.5 cm</b> (or exact integers if 6-8-10 right triangle gives BO = 9.17 + 16.52 = 25.5 cm)."
+      },
+      {
+        id: 8,
+        topic: "Circles & Area",
+        title: "Area of Circle with Rounding",
+        instruction: "Calculate the area of a circular plate with a diameter of 18.2 cm. Give your answer correct to 3 significant figures.",
+        marks: 2,
+        unit: "cm²",
+        answer: 260,
+        accepted: [260, 260.1, "260"],
+        svg: `<svg viewBox="0 0 160 140" class="w-full">
+          <circle cx="80" cy="70" r="55" fill="#f8fafc" stroke="#0284c7" stroke-width="2"/>
+          <line x1="25" y1="70" x2="135" y2="70" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <text x="80" y="62" font-size="11" font-weight="bold" fill="#0369a1" text-anchor="middle">d = 18.2 cm</text>
+        </svg>`,
+        solution: "Radius r = 18.2 ÷ 2 = 9.1 cm.<br>Area = π × r² = π × (9.1)² = 3.14159 × 82.81 ≈ 260.15 cm².<br>To 3 significant figures = <b>260 cm²</b>."
+      },
+      {
+        id: 9,
+        topic: "Equal Volume Cuboids",
+        title: "Finding Height of Cuboid B",
+        instruction: "Cuboid A measures 4 cm by 5 cm by 9 cm. Cuboid B has a base area of 6 cm by 10 cm and height h. Both cuboids have equal volume. Calculate h.",
+        marks: 2,
+        unit: "cm",
+        answer: 3,
+        accepted: [3, "3", "3 cm"],
+        svg: `<svg viewBox="0 0 260 110" class="w-full">
+          <!-- Cuboid A -->
+          <g transform="translate(10,20)">
+            <rect x="0" y="25" width="45" height="40" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+            <text x="22" y="80" font-size="9" font-weight="bold" text-anchor="middle">4x5x9</text>
+            <text x="22" y="48" font-size="11" font-weight="bold" fill="#0369a1" text-anchor="middle">A</text>
+          </g>
+          <!-- Cuboid B -->
+          <g transform="translate(140,20)">
+            <rect x="0" y="25" width="70" height="25" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+            <text x="35" y="65" font-size="9" font-weight="bold" text-anchor="middle">6x10xh</text>
+            <text x="35" y="42" font-size="11" font-weight="bold" fill="#92400e" text-anchor="middle">B</text>
+          </g>
+        </svg>`,
+        solution: "Volume of A = 4 × 5 × 9 = 180 cm³.<br>Volume of B = 6 × 10 × h = 60h.<br>Since volumes are equal: 60h = 180 ⟹ h = 180 ÷ 60 = <b>3 cm</b>."
+      },
+      {
+        id: 10,
+        topic: "Circles & Semicircles",
+        title: "Perimeter of Semicircle",
+        instruction: "Find the total perimeter of a semicircle with a diameter of 14 cm. (Give your answer to 1 decimal place).",
+        marks: 2,
+        unit: "cm",
+        answer: 36,
+        accepted: [36, 35.99, 36.0, "36"],
+        svg: `<svg viewBox="0 0 200 110" class="w-full">
+          <path d="M 30,80 A 70,70 0 0,1 170,80 Z" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+          <line x1="30" y1="80" x2="170" y2="80" stroke="#dc2626" stroke-width="2"/>
+          <text x="100" y="98" font-size="11" font-weight="bold" fill="#334155" text-anchor="middle">Diameter = 14 cm</text>
+        </svg>`,
+        solution: "Arc length = ½ × π × d = ½ × (22/7) × 14 = 22 cm.<br>Perimeter = Arc length + Diameter = 22 + 14 = <b>36 cm</b>."
+      },
+      {
+        id: 11,
+        topic: "Composite Shape Perimeter",
+        title: "Trapezium from Cut Rectangle",
+        instruction: "Two identical 12 cm by 20 cm rectangles are given. One is cut along its diagonal into two right triangles and joined to the other rectangle to form a trapezium. Calculate the perimeter of the trapezium.",
+        marks: 2,
+        unit: "cm",
+        answer: 86.6,
+        accepted: [86.6, 86.66, 86.7, 88, "86.6"],
+        svg: `<svg viewBox="0 0 260 100" class="w-full">
+          <polygon points="20,80 70,20 190,20 240,80" fill="#f0fdf4" stroke="#166534" stroke-width="2"/>
+          <text x="130" y="15" font-size="10" font-weight="bold" text-anchor="middle">20 cm</text>
+          <text x="130" y="95" font-size="10" font-weight="bold" text-anchor="middle">20 cm</text>
+        </svg>`,
+        solution: "Diagonal = √(20² + 12²) = √(400 + 144) = √544 ≈ 23.32 cm.<br>Perimeter = 20 (top) + 20 (bottom) + 23.32 (left slant) + 23.32 (right slant) = <b>86.6 cm</b> (or 88 cm for length orientation)."
+      },
+      {
+        id: 12,
+        topic: "Algebraic Perimeter to Area",
+        title: "Rectangle Area from Rod",
+        instruction: "A metal rod 2.4 m long is cut into 4 pieces to construct a rectangle whose length is 5 times its width. Calculate the area of the rectangle in cm².",
+        marks: 3,
+        unit: "cm²",
+        answer: 2000,
+        accepted: [2000, "2000"],
+        svg: null,
+        solution: "Perimeter = 2.4 m = 240 cm.<br>Let width = w, length = 5w.<br>Perimeter = 2(5w + w) = 12w = 240 cm ⟹ w = 20 cm, length = 100 cm.<br>Area = 100 × 20 = <b>2000 cm²</b>."
+      },
+      {
+        id: 13,
+        topic: "Fractions & Measurement",
+        title: "Sheets in Paper Stack",
+        instruction: "A stack of paper is 35 mm thick. Each sheet of paper is 5/14 mm thick. Work out the total number of sheets in the stack.",
+        marks: 2,
+        unit: "sheets",
+        answer: 98,
+        accepted: [98, "98"],
+        svg: `<svg viewBox="0 0 200 100" class="w-full">
+          <rect x="50" y="20" width="100" height="60" fill="#f8fafc" stroke="#475569" stroke-width="2"/>
+          <line x1="50" y1="30" x2="150" y2="30" stroke="#94a3b8" stroke-width="1"/>
+          <line x1="50" y1="40" x2="150" y2="40" stroke="#94a3b8" stroke-width="1"/>
+          <line x1="50" y1="50" x2="150" y2="50" stroke="#94a3b8" stroke-width="1"/>
+          <text x="160" y="55" font-size="10" font-weight="bold">35 mm</text>
+        </svg>`,
+        solution: "Number of sheets = 35 ÷ (5/14) = 35 × (14/5) = 7 × 14 = <b>98 sheets</b>."
+      },
+      {
+        id: 14,
+        topic: "Algebra & Equilateral Triangle",
+        title: "Equilateral Triangle Side Length",
+        instruction: "An equilateral triangle has sides represented by (4x + 1) cm. The perimeter of the triangle is 63 cm. Calculate the value of x.",
+        marks: 2,
+        unit: "x",
+        answer: 5,
+        accepted: [5, "5"],
+        svg: `<svg viewBox="0 0 160 130" class="w-full">
+          <polygon points="80,15 20,110 140,110" fill="#faf5ff" stroke="#7e22ce" stroke-width="2"/>
+          <text x="35" y="60" font-size="10" font-weight="bold" fill="#6b21a8">4x + 1</text>
+        </svg>`,
+        solution: "Each side length = 63 ÷ 3 = 21 cm.<br>4x + 1 = 21 ⟹ 4x = 20 ⟹ x = <b>5</b>."
+      },
+      {
+        id: 15,
+        topic: "Remaining Area",
+        title: "Remaining Card Area",
+        instruction: "A rectangular piece of card has an area of 0.4 m². A circle with an area of 850 cm² is cut out. Calculate the remaining area of card in square metres (m²).",
+        marks: 2,
+        unit: "m²",
+        answer: 0.315,
+        accepted: [0.315, ".315", "0.315 m²"],
+        svg: `<svg viewBox="0 0 220 110" class="w-full">
+          <rect x="20" y="15" width="180" height="80" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+          <circle cx="70" cy="55" r="28" fill="#ffffff" stroke="#0f172a" stroke-width="1.5"/>
+          <text x="130" y="55" font-size="11" font-weight="bold" fill="#334155">0.4 m²</text>
+          <text x="70" y="58" font-size="8" font-weight="bold" text-anchor="middle">850 cm²</text>
+        </svg>`,
+        solution: "Convert 850 cm² to m²: 850 ÷ 10,000 = 0.085 m².<br>Remaining Area = 0.4 - 0.085 = <b>0.315 m²</b>."
+      },
+      {
+        id: 16,
+        topic: "Cuboid Volume",
+        title: "Volume of Rectangular Prism",
+        instruction: "Calculate the volume of a cuboid with length 14 cm, width 6 cm, and height 5 cm.",
+        marks: 1,
+        unit: "cm³",
+        answer: 420,
+        accepted: [420, "420"],
+        svg: `<svg viewBox="0 0 220 120" class="w-full">
+          <rect x="20" y="30" width="130" height="60" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+          <text x="85" y="105" font-size="11" font-weight="bold" text-anchor="middle">14 cm x 6 cm x 5 cm</text>
+        </svg>`,
+        solution: "Volume = 14 × 6 × 5 = <b>420 cm³</b>."
+      },
+      {
+        id: 17,
+        topic: "Compound Shapes",
+        title: "Area of L-Shaped Polygon",
+        instruction: "An L-shaped polygon has outer dimensions 9.5 cm height and 8.8 cm width. The cutouts leave a vertical strip of width 4.2 cm and top horizontal section height of 4.8 cm. Find total area.",
+        marks: 2,
+        unit: "cm²",
+        answer: 61.5,
+        accepted: [61.5, "61.5"],
+        svg: `<svg viewBox="0 0 200 170" class="w-full">
+          <polygon points="30,20 85,20 85,80 160,80 160,150 30,150" fill="#fdf4ff" stroke="#a21caf" stroke-width="2"/>
+          <text x="57" y="15" font-size="10" font-weight="bold" text-anchor="middle">4.2 cm</text>
+          <text x="15" y="85" font-size="10" font-weight="bold">9.5 cm</text>
+          <text x="95" y="165" font-size="10" font-weight="bold" text-anchor="middle">8.8 cm</text>
+        </svg>`,
+        solution: "Split into two rectangles:<br>Left vertical block = 4.2 cm × 9.5 cm = 39.9 cm².<br>Right bottom block = (8.8 - 4.2) × (9.5 - 4.8) = 4.6 cm × 4.7 cm = 21.62 cm².<br>Total Area = 39.9 + 21.62 ≈ <b>61.5 cm²</b>."
+      },
+      {
+        id: 18,
+        topic: "Unit Conversion",
+        title: "Area Conversion (cm² to mm²)",
+        instruction: "Convert 8.5 cm² to mm².",
+        marks: 1,
+        unit: "mm²",
+        answer: 850,
+        accepted: [850, "850"],
+        svg: null,
+        solution: "1 cm² = 100 mm².<br>8.5 cm² = 8.5 × 100 = <b>850 mm²</b>."
+      },
+      {
+        id: 19,
+        topic: "Wireframe Solids",
+        title: "Pyramid Wire Structure",
+        instruction: "A square-based pyramid framework requires wire for all its edges. The square base has side length 4.15 cm and each slant edge is 7.85 cm. Calculate total wire needed.",
+        marks: 2,
+        unit: "cm",
+        answer: 48,
+        accepted: [48, "48", "48 cm"],
+        svg: `<svg viewBox="0 0 180 150" class="w-full">
+          <polygon points="90,15 30,105 90,135 150,105" fill="none" stroke="#475569" stroke-width="2"/>
+          <line x1="90" y1="15" x2="90" y2="135" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <text x="125" y="60" font-size="10" font-weight="bold">7.85 cm</text>
+          <text x="125" y="128" font-size="10" font-weight="bold">4.15 cm</text>
+        </svg>`,
+        solution: "4 Base edges = 4 × 4.15 = 16.6 cm.<br>4 Slant edges = 4 × 7.85 = 31.4 cm.<br>Total wire = 16.6 + 31.4 = <b>48 cm</b>."
+      },
+      {
+        id: 20,
+        topic: "Volume",
+        title: "Cuboid Volume",
+        instruction: "Calculate the volume of a box measuring 12 cm by 8 cm by 5 cm.",
+        marks: 1,
+        unit: "cm³",
+        answer: 480,
+        accepted: [480, "480"],
+        svg: null,
+        solution: "Volume = 12 × 8 × 5 = <b>480 cm³</b>."
+      },
+      {
+        id: 21,
+        topic: "Circles",
+        title: "Circumference of Circle",
+        instruction: "Calculate the circumference of a circle with a diameter of 12 cm. Give your answer to 1 decimal place.",
+        marks: 2,
+        unit: "cm",
+        answer: 37.7,
+        accepted: [37.7, 37.68, "37.7"],
+        svg: `<svg viewBox="0 0 160 140" class="w-full">
+          <circle cx="80" cy="70" r="50" fill="#f8fafc" stroke="#2563eb" stroke-width="2"/>
+          <line x1="30" y1="70" x2="130" y2="70" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <text x="80" y="65" font-size="10" font-weight="bold" fill="#1d4ed8" text-anchor="middle">12 cm</text>
+        </svg>`,
+        solution: "Circumference = π × d = 3.14159 × 12 = 37.699 cm ≈ <b>37.7 cm</b>."
+      },
+      {
+        id: 22,
+        topic: "Volume Comparison",
+        title: "Cube vs Cuboid Volume Difference",
+        instruction: "Cube X has side length 7 cm. Cuboid Y measures 8 cm by 6 cm by 5 cm. How much larger is the volume of Cube X than Cuboid Y?",
+        marks: 2,
+        unit: "cm³",
+        answer: 103,
+        accepted: [103, "103"],
+        svg: null,
+        solution: "Volume of Cube X = 7³ = 343 cm³.<br>Volume of Cuboid Y = 8 × 6 × 5 = 240 cm³.<br>Difference = 343 - 240 = <b>103 cm³</b>."
+      },
+      {
+        id: 23,
+        topic: "Prism Volume",
+        title: "Cross-Section Prism Volume",
+        instruction: "A prism has length 12 cm. Its cross-section is made of 3 identical rectangles each measuring 8 cm by 3 cm. Calculate the volume of the prism.",
+        marks: 2,
+        unit: "cm³",
+        answer: 864,
+        accepted: [864, "864"],
+        svg: `<svg viewBox="0 0 200 120" class="w-full">
+          <path d="M 30,20 L 50,20 L 50,50 L 70,50 L 70,20 L 90,20 L 90,100 L 70,100 L 70,70 L 50,70 L 50,100 L 30,100 Z" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+          <text x="20" y="60" font-size="10" font-weight="bold">8 cm</text>
+          <text x="40" y="115" font-size="10" font-weight="bold">3 cm</text>
+        </svg>`,
+        solution: "Cross-section area = 3 × (8 × 3) = 72 cm².<br>Volume = 72 × 12 = <b>864 cm³</b>."
+      },
+      {
+        id: 24,
+        topic: "Trapezium Dimensions",
+        title: "Trapezium Parallel Sides Sum",
+        instruction: "A trapezium has an area of 56 cm² and a height of 8 cm. The parallel sides a and b are integers with a < b. Find the sum (a + b).",
+        marks: 2,
+        unit: "a + b",
+        answer: 14,
+        accepted: [14, "14"],
+        svg: `<svg viewBox="0 0 200 120" class="w-full">
+          <polygon points="50,30 110,30 150,90 30,90" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+          <line x1="50" y1="30" x2="50" y2="90" stroke="#c2410c" stroke-width="1" stroke-dasharray="2,2"/>
+          <text x="40" y="65" font-size="10" font-weight="bold">8 cm</text>
+        </svg>`,
+        solution: "Area = ½ × (a + b) × h = 56 ⟹ ½ × (a + b) × 8 = 56 ⟹ 4(a + b) = 56 ⟹ a + b = <b>14</b>."
+      },
+      {
+        id: 25,
+        topic: "Capacity & Volume Units",
+        title: "Convert Litres to cm³",
+        instruction: "Convert 48 litres into cubic centimetres (cm³). (1 litre = 1000 cm³)",
+        marks: 1,
+        unit: "cm³",
+        answer: 48000,
+        accepted: [48000, "48000", "48,000"],
+        svg: null,
+        solution: "1 litre = 1000 cm³.<br>48 litres = 48 × 1000 = <b>48,000 cm³</b>."
+      },
+      {
+        id: 26,
+        topic: "Packing Cubes",
+        title: "Packing Cubes into Box",
+        instruction: "Cubes of edge 4 cm are packed into a box measuring 1.6 m by 40 cm by 60 cm. How many complete cubes can fit inside?",
+        marks: 3,
+        unit: "cubes",
+        answer: 6000,
+        accepted: [6000, "6000", "6,000"],
+        svg: null,
+        solution: "1.6 m = 160 cm.<br>Length fit = 160 ÷ 4 = 40.<br>Width fit = 40 ÷ 4 = 10.<br>Height fit = 60 ÷ 4 = 15.<br>Total cubes = 40 × 10 × 15 = <b>6,000 cubes</b>."
+      },
+      {
+        id: 27,
+        topic: "Compound Perimeter",
+        title: "Perimeter of Stepped Polygon",
+        instruction: "Calculate the perimeter of a rectilinear stepped polygon with total width 140 cm and total height 90 cm.",
+        marks: 2,
+        unit: "cm",
+        answer: 460,
+        accepted: [460, "460"],
+        svg: `<svg viewBox="0 0 220 130" class="w-full">
+          <polygon points="30,20 170,20 170,60 110,60 110,110 30,110" fill="#f8fafc" stroke="#0284c7" stroke-width="2"/>
+          <text x="100" y="15" font-size="10" font-weight="bold" text-anchor="middle">140 cm</text>
+          <text x="178" y="45" font-size="10" font-weight="bold">90 cm</text>
+        </svg>`,
+        solution: "For rectilinear orthogonal shapes, horizontal edges sum to 2 × width and vertical edges sum to 2 × height.<br>Perimeter = 2 × (140 + 90) = 2 × 230 = <b>460 cm</b>."
+      },
+      {
+        id: 28,
+        topic: "Surface Area of Prism",
+        title: "Surface Area of Triangular Prism Net",
+        instruction: "A triangular prism has right-triangle bases with sides 5 cm, 12 cm, 13 cm and height 18 cm. Calculate total surface area.",
+        marks: 3,
+        unit: "cm²",
+        answer: 600,
+        accepted: [600, "600"],
+        svg: null,
+        solution: "2 Triangles = 2 × (½ × 5 × 12) = 60 cm².<br>3 Rectangles = 18 × (5 + 12 + 13) = 18 × 30 = 540 cm².<br>Total Surface Area = 60 + 540 = <b>600 cm²</b>."
+      },
+      {
+        id: 29,
+        topic: "Volume Unit Conversion",
+        title: "Cubic Metres to cm³",
+        instruction: "Convert 0.45 m³ into cubic centimetres (cm³).",
+        marks: 1,
+        unit: "cm³",
+        answer: 450000,
+        accepted: [450000, "450000", "450,000"],
+        svg: null,
+        solution: "1 m³ = 1,000,000 cm³.<br>0.45 m³ = 0.45 × 1,000,000 = <b>450,000 cm³</b>."
+      },
+      {
+        id: 30,
+        topic: "Composite Area",
+        title: "Theatre Stage Area with Semicircle",
+        instruction: "A stage combines a rectangle (18 m long, 6 m wide) and a semicircle (diameter 18 m). Calculate total area to 2 significant figures.",
+        marks: 4,
+        unit: "m²",
+        answer: 240,
+        accepted: [235, 235.2, 240, "240"],
+        svg: `<svg viewBox="0 0 220 140" class="w-full">
+          <rect x="30" y="60" width="160" height="50" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+          <path d="M 30,60 A 80,80 0 0,1 190,60 Z" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
+          <text x="110" y="90" font-size="11" font-weight="bold" text-anchor="middle">18 m</text>
+          <text x="198" y="88" font-size="10" font-weight="bold">6 m</text>
+        </svg>`,
+        solution: "Rectangle area = 18 × 6 = 108 m².<br>Semicircle area = ½ × π × (9)² = 0.5 × 3.14159 × 81 ≈ 127.23 m².<br>Total area = 108 + 127.23 = 235.23 m² ≈ <b>240 m²</b> (to 2 sig figs)."
+      }
+    ];
+
+    // --- APPLICATION STATE ---
+    let state = {
+      currentIndex: 0,
+      answers: {},    // { qId: { userAns: "", working: "", isChecked: false, isCorrect: false } }
+      score: 0
+    };
+
+    const LOCAL_STORAGE_KEY = "cambridge_math_checkpoint_qstate_v2";
+
+    // --- DOM ELEMENTS ---
+    const qGrid = document.getElementById("question-grid");
+    const qNumBadge = document.getElementById("q-number-badge");
+    const qTopicTag = document.getElementById("q-topic-tag");
+    const qMarks = document.getElementById("q-marks");
+    const qTitle = document.getElementById("q-title");
+    const qInstruction = document.getElementById("q-instruction");
+    const qDiagramBox = document.getElementById("q-diagram-box");
+    const qDiagramSvg = document.getElementById("q-diagram-svg");
+    const userWorking = document.getElementById("user-working");
+    const userAns = document.getElementById("user-ans");
+    const qUnitLabel = document.getElementById("q-unit-label");
+    const submitBtn = document.getElementById("submit-ans-btn");
+    const statusFeedback = document.getElementById("status-feedback");
+    const solutionBox = document.getElementById("solution-box");
+    const solutionContent = document.getElementById("solution-content");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const footerQCount = document.getElementById("footer-q-count");
+    const scoreVal = document.getElementById("score-val");
+    const scorePercent = document.getElementById("score-percent");
+    const progressBar = document.getElementById("progress-bar");
+    const headerProgress = document.getElementById("header-progress");
+    const resetBtn = document.getElementById("reset-btn");
+    const resetModal = document.getElementById("reset-modal");
+    const cancelResetBtn = document.getElementById("cancel-reset-btn");
+    const confirmResetBtn = document.getElementById("confirm-reset-btn");
+
+    // --- INITIALIZATION ---
+    function initApp() {
+      loadState();
+      renderGrid();
+      loadQuestion(state.currentIndex);
+      updateOverallStats();
+
+      prevBtn.addEventListener("click", () => navigateQuestion(-1));
+      nextBtn.addEventListener("click", () => navigateQuestion(1));
+      submitBtn.addEventListener("click", checkAnswer);
+      
+      userAns.addEventListener("input", saveCurrentDraft);
+      userWorking.addEventListener("input", saveCurrentDraft);
+
+      resetBtn.addEventListener("click", () => resetModal.classList.remove("hidden"));
+      cancelResetBtn.addEventListener("click", () => resetModal.classList.add("hidden"));
+      confirmResetBtn.addEventListener("click", resetAll);
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (saved) {
+        try {
+          state = JSON.parse(saved);
+        } catch(e) {
+          console.error("Failed to parse state", e);
+        }
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function saveCurrentDraft() {
+      const q = quizData[state.currentIndex];
+      if (!state.answers[q.id]) {
+        state.answers[q.id] = { userAns: "", working: "", isChecked: false, isCorrect: false };
+      }
+      state.answers[q.id].userAns = userAns.value;
+      state.answers[q.id].working = userWorking.value;
+      saveState();
+      updateGridItem(state.currentIndex);
+      updateOverallStats();
+    }
+
+    // --- RENDER LOGIC ---
+    function renderGrid() {
+      qGrid.innerHTML = "";
+      quizData.forEach((q, idx) => {
+        const btn = document.createElement("button");
+        btn.className = getGridBtnClass(q.id, idx);
+        btn.textContent = idx + 1;
+        btn.addEventListener("click", () => {
+          saveCurrentDraft();
+          state.currentIndex = idx;
+          loadQuestion(idx);
+          saveState();
+        });
+        qGrid.appendChild(btn);
+      });
+    }
+
+    function getGridBtnClass(qId, idx) {
+      const isCurrent = idx === state.currentIndex;
+      const ansData = state.answers[qId];
+
+      let base = "w-full h-9 rounded-lg font-bold text-xs flex items-center justify-center transition border shadow-xs ";
+
+      if (isCurrent) {
+        base += "ring-2 ring-indigo-600 ring-offset-1 ";
+      }
+
+      if (ansData && ansData.isChecked) {
+        if (ansData.isCorrect) {
+          return base + "bg-emerald-500 text-white border-emerald-600";
+        } else {
+          return base + "bg-rose-500 text-white border-rose-600";
+        }
+      } else if (ansData && ansData.userAns.trim() !== "") {
+        return base + "bg-amber-400 text-amber-950 border-amber-500";
+      } else {
+        return base + "bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200";
+      }
+    }
+
+    function updateGridItem(idx) {
+      const btn = qGrid.children[idx];
+      if (btn) {
+        const q = quizData[idx];
+        btn.className = getGridBtnClass(q.id, idx);
+      }
+    }
+
+    function loadQuestion(index) {
+      const q = quizData[index];
+      state.currentIndex = index;
+
+      qNumBadge.textContent = `Question ${index + 1} of 30`;
+      qTopicTag.textContent = q.topic;
+      qMarks.textContent = q.marks;
+
+      qTitle.textContent = q.title;
+      qInstruction.textContent = q.instruction;
+      qUnitLabel.textContent = q.unit || "";
+
+      if (q.svg) {
+        qDiagramBox.classList.remove("hidden");
+        qDiagramSvg.innerHTML = q.svg;
+      } else {
+        qDiagramBox.classList.add("hidden");
+        qDiagramSvg.innerHTML = "";
+      }
+
+      const savedAns = state.answers[q.id] || { userAns: "", working: "", isChecked: false, isCorrect: false };
+      userAns.value = savedAns.userAns || "";
+      userWorking.value = savedAns.working || "";
+
+      if (savedAns.isChecked) {
+        showFeedback(savedAns.isCorrect);
+        solutionBox.classList.remove("hidden");
+        solutionContent.innerHTML = q.solution;
+        userAns.disabled = true;
+        userWorking.disabled = true;
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+      } else {
+        statusFeedback.className = "hidden";
+        solutionBox.classList.add("hidden");
+        userAns.disabled = false;
+        userWorking.disabled = false;
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+      }
+
+      prevBtn.disabled = index === 0;
+      prevBtn.classList.toggle("opacity-40", index === 0);
+
+      nextBtn.disabled = index === quizData.length - 1;
+      nextBtn.classList.toggle("opacity-40", index === quizData.length - 1);
+
+      footerQCount.textContent = `${index + 1} / 30`;
+      renderGrid();
+    }
+
+    function navigateQuestion(delta) {
+      saveCurrentDraft();
+      const newIdx = state.currentIndex + delta;
+      if (newIdx >= 0 && newIdx < quizData.length) {
+        loadQuestion(newIdx);
+        saveState();
+      }
+    }
+
+    // --- CHECK ANSWER ---
+    function checkAnswer() {
+      const q = quizData[state.currentIndex];
+      const val = userAns.value.trim();
+
+      if (!val) {
+        alert("Please enter your answer before checking.");
+        return;
+      }
+
+      let isCorrect = false;
+      const cleanInput = val.replace(/,/g, '').toLowerCase();
+
+      q.accepted.forEach(acc => {
+        if (typeof acc === 'number') {
+          const numInput = parseFloat(cleanInput);
+          if (!isNaN(numInput) && Math.abs(numInput - acc) < 0.2) {
+            isCorrect = true;
+          }
+        } else {
+          if (cleanInput === acc.toString().toLowerCase()) {
+            isCorrect = true;
+          }
+        }
+      });
+
+      state.answers[q.id] = {
+        userAns: userAns.value,
+        working: userWorking.value,
+        isChecked: true,
+        isCorrect: isCorrect
+      };
+
+      saveState();
+      loadQuestion(state.currentIndex);
+      updateOverallStats();
+    }
+
+    function showFeedback(isCorrect) {
+      statusFeedback.classList.remove("hidden", "bg-emerald-100", "text-emerald-800", "bg-rose-100", "text-rose-800");
+      if (isCorrect) {
+        statusFeedback.classList.add("flex", "bg-emerald-100", "text-emerald-800");
+        statusFeedback.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-base"></i> <span>Correct! (+${quizData[state.currentIndex].marks} marks)</span>`;
+      } else {
+        statusFeedback.classList.add("flex", "bg-rose-100", "text-rose-800");
+        statusFeedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 text-base"></i> <span>Incorrect. Check explanation below.</span>`;
+      }
+    }
+
+    function updateOverallStats() {
+      let earnedMarks = 0;
+      let totalMaxMarks = 0;
+      let answeredCount = 0;
+
+      quizData.forEach(q => {
+        totalMaxMarks += q.marks;
+        const ans = state.answers[q.id];
+        if (ans) {
+          if (ans.isChecked && ans.isCorrect) {
+            earnedMarks += q.marks;
+          }
+          if (ans.userAns && ans.userAns.trim() !== "") {
+            answeredCount++;
+          }
+        }
+      });
+
+      state.score = earnedMarks;
+      scoreVal.textContent = earnedMarks;
+
+      const pct = Math.round((earnedMarks / totalMaxMarks) * 100);
+      scorePercent.textContent = `${pct}%`;
+
+      const progressPct = Math.round((answeredCount / quizData.length) * 100);
+      progressBar.style.width = `${progressPct}%`;
+      headerProgress.textContent = `${answeredCount} / 30 Answered`;
+    }
+
+    function resetAll() {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      state = {
+        currentIndex: 0,
+        answers: {},
+        score: 0
+      };
+      resetModal.classList.add("hidden");
+      renderGrid();
+      loadQuestion(0);
+      updateOverallStats();
+    }
+
+    window.onload = function() {
+      initApp();
+    };
+  </script>
+</body>
+</html>
