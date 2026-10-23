@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambridge Grade 7 Geometry Mastery Quiz</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .math-font {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+        }
+        /* Custom scrollbar for question grid */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-sm">
+                    <i class="fa-solid fa-shapes text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-800 leading-tight">Cambridge Lower Secondary Geometry</h1>
+                    <p class="text-xs text-slate-500 font-medium">Grade 7 • 30 Interactive Short Answer Questions</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <!-- Sound Toggle -->
+                <button id="sound-btn" onclick="toggleSound()" class="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition" title="Toggle Sound Effects">
+                    <i id="sound-icon" class="fa-solid fa-volume-high text-lg"></i>
+                </button>
+                <!-- Reset Button -->
+                <button onclick="confirmReset()" class="hidden sm:flex items-center space-x-1 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-2 rounded-lg transition border border-rose-200">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Reset All</span>
+                </button>
+            </div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-100 h-1.5">
+            <div id="top-progress-bar" class="bg-indigo-600 h-1.5 transition-all duration-300" style="width: 0%"></div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Sidebar Navigation & Stats (Desktop Left / Mobile Top) -->
+            <aside class="lg:col-span-4 xl:col-span-3 space-y-6">
+                <!-- Progress & Score Card -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500">Your Overview</h2>
+                    
+                    <div class="grid grid-cols-2 gap-3 text-center">
+                        <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl">
+                            <span class="block text-2xl font-black text-indigo-600" id="score-display">0/30</span>
+                            <span class="text-xs font-semibold text-indigo-800">Score</span>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl">
+                            <span class="block text-2xl font-black text-slate-700" id="answered-display">0/30</span>
+                            <span class="text-xs font-semibold text-slate-600">Attempted</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                            <span>Accuracy Rate</span>
+                            <span id="accuracy-percentage">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div id="accuracy-bar" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigator Grid -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500">Question Matrix</h2>
+                        <span class="text-xs text-slate-400 font-medium">Click to Jump</span>
+                    </div>
+
+                    <!-- Filter buttons -->
+                    <div class="flex items-center space-x-1 mb-4 bg-slate-100 p-1 rounded-xl text-xs font-medium">
+                        <button onclick="filterGrid('all')" id="filter-all" class="flex-1 py-1 rounded-lg text-center bg-white shadow-xs font-semibold text-slate-800">All</button>
+                        <button onclick="filterGrid('pending')" id="filter-pending" class="flex-1 py-1 rounded-lg text-center text-slate-600 hover:text-slate-900">Todo</button>
+                        <button onclick="filterGrid('done')" id="filter-done" class="flex-1 py-1 rounded-lg text-center text-slate-600 hover:text-slate-900">Done</button>
+                    </div>
+
+                    <!-- Grid Buttons -->
+                    <div id="question-grid" class="grid grid-cols-5 gap-2 max-h-72 overflow-y-auto p-1">
+                        <!-- Dynamically filled -->
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs font-medium text-slate-500">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="w-3 h-3 rounded-md bg-emerald-500 border border-emerald-600 inline-block"></span>
+                            <span>Correct</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="w-3 h-3 rounded-md bg-rose-500 border border-rose-600 inline-block"></span>
+                            <span>Incorrect</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="w-3 h-3 rounded-md bg-indigo-100 border border-indigo-400 inline-block"></span>
+                            <span>Current</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <span class="w-3 h-3 rounded-md bg-slate-100 border border-slate-300 inline-block"></span>
+                            <span>Unanswered</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Topic Breakdown -->
+                <div class="bg-indigo-900 text-white rounded-2xl p-5 shadow-sm space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-300">Cambridge Grade 7 Scope</h3>
+                    <ul class="text-xs space-y-2 text-indigo-100 font-medium">
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400"></i><span>Perimeter of 2D & Composite Shapes</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400"></i><span>Area of Triangles, Quad & Circles</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400"></i><span>Surface Area of Prisms & Cylinders</span></li>
+                        <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400"></i><span>Volume of Cuboids, Prisms & Cylinders</span></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Question Display Area (Desktop Right) -->
+            <section class="lg:col-span-8 xl:col-span-9 space-y-6">
+                <!-- Main Question Card -->
+                <div id="question-card" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+                    
+                    <!-- Top Row: Topic Header & Question Number -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                        <div class="flex items-center space-x-2">
+                            <span id="topic-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 uppercase tracking-wider">Topic</span>
+                            <span id="question-number-badge" class="text-sm font-semibold text-slate-500">Question 1 of 30</span>
+                        </div>
+                        <span id="status-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">Unanswered</span>
+                    </div>
+
+                    <!-- Question Text & Diagram Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <!-- SVG Diagram Frame -->
+                        <div class="md:col-span-5 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center min-h-[220px]">
+                            <div id="svg-container" class="w-full flex items-center justify-center">
+                                <!-- Dynamic SVG 삽입 -->
+                            </div>
+                        </div>
+
+                        <!-- Question Statement -->
+                        <div class="md:col-span-7 space-y-4">
+                            <h3 id="question-title" class="text-lg font-bold text-slate-800 leading-snug">
+                                Loading Question...
+                            </h3>
+                            <div id="question-instructions" class="text-sm text-slate-600 bg-amber-50 border border-amber-200 p-3 rounded-lg flex items-start space-x-2">
+                                <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+                                <span class="text-xs">Type your numerical answer in the box below. Keep rounding to exact required decimals or integer values as requested.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Answer Input & Submission Form -->
+                    <form id="answer-form" onsubmit="handleAnswerSubmit(event)" class="space-y-4 pt-2 border-t border-slate-100">
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            <label for="user-input" class="text-sm font-semibold text-slate-700 whitespace-nowrap">Your Answer:</label>
+                            <div class="relative flex-1">
+                                <input type="number" step="any" id="user-input" placeholder="Enter numerical value" 
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-semibold text-slate-800 text-lg placeholder:text-slate-400 placeholder:text-sm transition outline-none" required>
+                                <span id="unit-label" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-bold pointer-events-none">cm</span>
+                            </div>
+                            <button type="submit" id="submit-btn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-sm transition flex items-center justify-center space-x-2 min-w-[130px]">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Check Answer</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Feedback & Step-by-Step Worked Solution Frame -->
+                    <div id="feedback-frame" class="hidden space-y-4 rounded-xl p-5 border transition-all duration-300">
+                        <div class="flex items-center space-x-2 font-bold text-base" id="feedback-title-container">
+                            <i id="feedback-icon" class="fa-solid text-xl"></i>
+                            <span id="feedback-title">Correct!</span>
+                        </div>
+                        <div id="worked-solution" class="text-sm space-y-2 text-slate-700 bg-white/80 p-4 rounded-lg border border-slate-200">
+                            <!-- Step by step calculations -->
+                        </div>
+                    </div>
+
+                    <!-- Bottom Nav Controls -->
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <button onclick="navigateQuestion(-1)" id="prev-btn" class="px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-sm transition flex items-center space-x-2">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Previous</span>
+                        </button>
+                        
+                        <span class="text-xs font-semibold text-slate-400 hidden sm:inline-block">Use arrow buttons or matrix grid to navigate</span>
+
+                        <button onclick="navigateQuestion(1)" id="next-btn" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold text-sm transition flex items-center space-x-2">
+                            <span>Next</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 font-medium">
+            Cambridge Lower Secondary Grade 7 Mathematics • Interactive Geometry Suite • Auto-saved locally
+        </div>
+    </footer>
+
+    <!-- Audio Synth (Web Audio API) Script + Application Logic -->
+    <script>
+        // -------------------------------------------------------------
+        // Web Audio API Sound Effects Engine
+        // -------------------------------------------------------------
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioCtx;
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-lg';
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-lg text-slate-400';
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    // Upward arpeggio
+                    const now = ctx.currentTime;
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'incorrect') {
+                    // Low buzz
+                    const now = ctx.currentTime;
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.setValueAtTime(110, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                }
+            } catch (e) {
+                console.log('Audio playback prevented:', e);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 30 Cambridge Grade 7 Geometry Questions Database
+        // -------------------------------------------------------------
+        const questionsData = [
+            // PERIMETER 2D (1-7)
+            {
+                id: 1,
+                topic: "Perimeter",
+                title: "Calculate the perimeter of a rectangle with length 14 cm and width 8 cm.",
+                unit: "cm",
+                correctAnswer: 44,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 130" class="w-48 h-32"><rect x="30" y="25" width="140" height="80" rx="4" fill="#e0e7ff" stroke="#4f46e5" stroke-width="3"/><text x="100" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">14 cm</text><text x="178" y="70" text-anchor="start" font-size="12" font-weight="bold" fill="#334155">8 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Perimeter = 2 × (Length + Width)<br><strong>Calculation:</strong> P = 2 × (14 + 8) = 2 × 22 = <strong>44 cm</strong>"
+            },
+            {
+                id: 2,
+                topic: "Perimeter",
+                title: "Find the perimeter of an isosceles triangle with base 12 cm and two equal side lengths of 15 cm each.",
+                unit: "cm",
+                correctAnswer: 42,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="100,20 30,110 170,110" fill="#e0e7ff" stroke="#4f46e5" stroke-width="3"/><text x="100" y="128" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">12 cm</text><text x="50" y="60" text-anchor="end" font-size="12" font-weight="bold" fill="#334155">15 cm</text><text x="150" y="60" text-anchor="start" font-size="12" font-weight="bold" fill="#334155">15 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Perimeter = Base + Side1 + Side2<br><strong>Calculation:</strong> P = 12 + 15 + 15 = <strong>42 cm</strong>"
+            },
+            {
+                id: 3,
+                topic: "Perimeter",
+                title: "Work out the perimeter of a parallelogram with side lengths of 11 cm and 7 cm.",
+                unit: "cm",
+                correctAnswer: 36,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 130" class="w-48 h-32"><polygon points="50,25 170,25 140,100 20,100" fill="#e0e7ff" stroke="#4f46e5" stroke-width="3"/><text x="110" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">11 cm</text><text x="162" y="65" text-anchor="start" font-size="12" font-weight="bold" fill="#334155">7 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Perimeter = 2 × (a + b)<br><strong>Calculation:</strong> P = 2 × (11 + 7) = 2 × 18 = <strong>36 cm</strong>"
+            },
+            {
+                id: 4,
+                topic: "Perimeter",
+                title: "Calculate the perimeter of an isosceles trapezium with parallel sides 16 cm and 10 cm, and non-parallel sides 8 cm each.",
+                unit: "cm",
+                correctAnswer: 42,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 130" class="w-48 h-32"><polygon points="50,25 150,25 180,105 20,105" fill="#e0e7ff" stroke="#4f46e5" stroke-width="3"/><text x="100" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">10 cm</text><text x="100" y="122" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">16 cm</text><text x="30" y="65" text-anchor="end" font-size="12" font-weight="bold" fill="#334155">8 cm</text><text x="170" y="65" text-anchor="start" font-size="12" font-weight="bold" fill="#334155">8 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Perimeter = Sum of all 4 sides<br><strong>Calculation:</strong> P = 10 + 16 + 8 + 8 = <strong>42 cm</strong>"
+            },
+            {
+                id: 5,
+                topic: "Perimeter",
+                title: "Find the circumference of a circle with a radius of 7 cm. (Use π = 22/7)",
+                unit: "cm",
+                correctAnswer: 44,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><circle cx="100" cy="70" r="50" fill="#e0e7ff" stroke="#4f46e5" stroke-width="3"/><line x1="100" y1="70" x2="150" y2="70" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4"/><circle cx="100" cy="70" r="3" fill="#dc2626"/><text x="125" y="63" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">r = 7 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Circumference = 2 × π × r<br><strong>Calculation:</strong> C = 2 × (22/7) × 7 = 2 × 22 = <strong>44 cm</strong>"
+            },
+            {
+                id: 6,
+                topic: "Perimeter",
+                title: "Work out the circumference of a circle with a diameter of 10 cm. (Use π = 3.14)",
+                unit: "cm",
+                correctAnswer: 31.4,
+                tolerance: 0.1,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><circle cx="100" cy="70" r="50" fill="#e0e7ff" stroke="#4f46e5" stroke-width="3"/><line x1="50" y1="70" x2="150" y2="70" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4"/><circle cx="100" cy="70" r="3" fill="#dc2626"/><text x="100" y="63" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">d = 10 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Circumference = π × d<br><strong>Calculation:</strong> C = 3.14 × 10 = <strong>31.4 cm</strong>"
+            },
+            {
+                id: 7,
+                topic: "Perimeter",
+                title: "Calculate the total perimeter of an L-shaped compound figure with dimensions shown: top = 6 cm, left vertical = 10 cm, bottom = 14 cm, right vertical = 4 cm.",
+                unit: "cm",
+                correctAnswer: 48,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="30,20 90,20 90,70 170,70 170,110 30,110" fill="#e0e7ff" stroke="#4f46e5" stroke-width="3"/><text x="60" y="15" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">6 cm</text><text x="22" y="65" text-anchor="end" font-size="11" font-weight="bold" fill="#334155">10 cm</text><text x="100" y="125" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">14 cm</text><text x="178" y="95" text-anchor="start" font-size="11" font-weight="bold" fill="#334155">4 cm</text></svg>`,
+                solution: "<strong>Step 1:</strong> Find missing sides.<br>Horizontal inner = 14 - 6 = 8 cm<br>Vertical inner = 10 - 4 = 6 cm<br><strong>Step 2:</strong> Total Perimeter = 6 + 10 + 14 + 4 + 8 + 6 = <strong>48 cm</strong>"
+            },
+
+            // AREA 2D (8-16)
+            {
+                id: 8,
+                topic: "Area 2D",
+                title: "Calculate the area of a right-angled triangle with a base of 12 cm and a perpendicular height of 9 cm.",
+                unit: "cm²",
+                correctAnswer: 54,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 130" class="w-48 h-32"><polygon points="40,20 40,100 160,100" fill="#fef3c7" stroke="#d97706" stroke-width="3"/><rect x="40" y="90" width="10" height="10" fill="none" stroke="#d97706" stroke-width="1.5"/><text x="100" y="118" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">base = 12 cm</text><text x="32" y="60" text-anchor="end" font-size="12" font-weight="bold" fill="#334155">h = 9 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Area = ½ × base × height<br><strong>Calculation:</strong> Area = ½ × 12 × 9 = 6 × 9 = <strong>54 cm²</strong>"
+            },
+            {
+                id: 9,
+                topic: "Area 2D",
+                title: "Find the area of a parallelogram with a base of 15 cm and a vertical height of 8 cm.",
+                unit: "cm²",
+                correctAnswer: 120,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 130" class="w-48 h-32"><polygon points="60,25 170,25 130,100 20,100" fill="#fef3c7" stroke="#d97706" stroke-width="3"/><line x1="60" y1="25" x2="60" y2="100" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/><text x="75" y="118" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">15 cm</text><text x="68" y="65" text-anchor="start" font-size="12" font-weight="bold" fill="#dc2626">h = 8 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Area = base × height<br><strong>Calculation:</strong> Area = 15 × 8 = <strong>120 cm²</strong>"
+            },
+            {
+                id: 10,
+                topic: "Area 2D",
+                title: "Work out the area of a trapezium with parallel sides a = 12 cm and b = 18 cm, and height h = 6 cm.",
+                unit: "cm²",
+                correctAnswer: 90,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 130" class="w-48 h-32"><polygon points="60,25 140,25 175,100 25,100" fill="#fef3c7" stroke="#d97706" stroke-width="3"/><line x1="60" y1="25" x2="60" y2="100" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/><text x="100" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">a = 12 cm</text><text x="100" y="118" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">b = 18 cm</text><text x="68" y="65" text-anchor="start" font-size="12" font-weight="bold" fill="#dc2626">h = 6 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Area = ½ × (a + b) × h<br><strong>Calculation:</strong> Area = ½ × (12 + 18) × 6 = ½ × 30 × 6 = 15 × 6 = <strong>90 cm²</strong>"
+            },
+            {
+                id: 11,
+                topic: "Area 2D",
+                title: "Calculate the area of a circle with a radius of 10 cm. (Use π = 3.14)",
+                unit: "cm²",
+                correctAnswer: 314,
+                tolerance: 0.1,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><circle cx="100" cy="70" r="50" fill="#fef3c7" stroke="#d97706" stroke-width="3"/><line x1="100" y1="70" x2="150" y2="70" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4"/><circle cx="100" cy="70" r="3" fill="#dc2626"/><text x="125" y="63" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">r = 10 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Area = π × r²<br><strong>Calculation:</strong> Area = 3.14 × 10² = 3.14 × 100 = <strong>314 cm²</strong>"
+            },
+            {
+                id: 12,
+                topic: "Area 2D",
+                title: "Find the area of a circle with a diameter of 14 cm. (Use π = 22/7)",
+                unit: "cm²",
+                correctAnswer: 154,
+                tolerance: 0.1,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><circle cx="100" cy="70" r="50" fill="#fef3c7" stroke="#d97706" stroke-width="3"/><line x1="50" y1="70" x2="150" y2="70" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4"/><circle cx="100" cy="70" r="3" fill="#dc2626"/><text x="100" y="63" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">d = 14 cm</text></svg>`,
+                solution: "<strong>Step 1:</strong> Radius = diameter / 2 = 14 / 2 = 7 cm<br><strong>Step 2:</strong> Area = π × r² = (22/7) × 7 × 7 = 22 × 7 = <strong>154 cm²</strong>"
+            },
+            {
+                id: 13,
+                topic: "Area 2D",
+                title: "Calculate the area of a semicircle with a radius of 6 cm. (Use π = 3.14)",
+                unit: "cm²",
+                correctAnswer: 56.52,
+                tolerance: 0.1,
+                svg: `<svg viewBox="0 0 200 130" class="w-48 h-32"><path d="M 40,90 A 60,60 0 0,1 160,90 Z" fill="#fef3c7" stroke="#d97706" stroke-width="3"/><line x1="100" y1="90" x2="160" y2="90" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4"/><circle cx="100" cy="90" r="3" fill="#dc2626"/><text x="130" y="83" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">r = 6 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Area = ½ × π × r²<br><strong>Calculation:</strong> Area = 0.5 × 3.14 × 6² = 0.5 × 3.14 × 36 = <strong>56.52 cm²</strong>"
+            },
+            {
+                id: 14,
+                topic: "Area 2D",
+                title: "Work out the area of a composite shape made of a rectangle (10 cm by 6 cm) attached to a triangle with base 10 cm and height 4 cm on top.",
+                unit: "cm²",
+                correctAnswer: 80,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="40,60 100,20 160,60" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><rect x="40" y="60" width="120" height="60" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="100" y="95" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">10 cm × 6 cm</text><text x="100" y="45" text-anchor="middle" font-size="11" font-weight="bold" fill="#dc2626">h = 4 cm</text></svg>`,
+                solution: "<strong>Area of Rectangle:</strong> 10 × 6 = 60 cm²<br><strong>Area of Triangle:</strong> ½ × 10 × 4 = 20 cm²<br><strong>Total Area:</strong> 60 + 20 = <strong>80 cm²</strong>"
+            },
+            {
+                id: 15,
+                topic: "Area 2D",
+                title: "A square has a perimeter of 36 cm. Calculate its area.",
+                unit: "cm²",
+                correctAnswer: 81,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 130" class="w-48 h-32"><rect x="60" y="25" width="80" height="80" fill="#fef3c7" stroke="#d97706" stroke-width="3"/><text x="100" y="70" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">P = 36 cm</text></svg>`,
+                solution: "<strong>Step 1:</strong> Side length = Perimeter / 4 = 36 / 4 = 9 cm<br><strong>Step 2:</strong> Area = Side² = 9 × 9 = <strong>81 cm²</strong>"
+            },
+            {
+                id: 16,
+                topic: "Area 2D",
+                title: "Calculate the shaded area of a rectangular frame: Outer rectangle is 12 cm by 10 cm, inner unshaded rectangle is 8 cm by 5 cm.",
+                unit: "cm²",
+                correctAnswer: 80,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><rect x="30" y="20" width="140" height="100" fill="#fcd34d" stroke="#d97706" stroke-width="2"/><rect x="60" y="40" width="80" height="60" fill="#ffffff" stroke="#d97706" stroke-width="2"/><text x="100" y="15" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">12 cm</text><text x="22" y="70" text-anchor="end" font-size="11" font-weight="bold" fill="#334155">10 cm</text><text x="100" y="75" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">8 × 5 cm</text></svg>`,
+                solution: "<strong>Outer Area:</strong> 12 × 10 = 120 cm²<br><strong>Inner Area:</strong> 8 × 5 = 40 cm²<br><strong>Shaded Area:</strong> 120 - 40 = <strong>80 cm²</strong>"
+            },
+
+            // SURFACE AREA 3D (17-23)
+            {
+                id: 17,
+                topic: "Surface Area",
+                title: "Calculate the total surface area of a cube with edge length of 5 cm.",
+                unit: "cm²",
+                correctAnswer: 150,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="50,40 100,40 100,90 50,90" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><polygon points="100,40 130,20 130,70 100,90" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/><polygon points="50,40 80,20 130,20 100,40" fill="#86efac" stroke="#16a34a" stroke-width="2"/><text x="75" y="105" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">5 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Surface Area = 6 × s²<br><strong>Calculation:</strong> SA = 6 × (5²) = 6 × 25 = <strong>150 cm²</strong>"
+            },
+            {
+                id: 18,
+                topic: "Surface Area",
+                title: "Find the total surface area of a cuboid with length 8 cm, width 5 cm, and height 4 cm.",
+                unit: "cm²",
+                correctAnswer: 184,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="40,50 120,50 120,100 40,100" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><polygon points="120,50 160,25 160,75 120,100" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/><polygon points="40,50 80,25 160,25 120,50" fill="#86efac" stroke="#16a34a" stroke-width="2"/><text x="80" y="115" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">8 cm</text><text x="145" y="95" text-anchor="start" font-size="11" font-weight="bold" fill="#334155">5 cm</text><text x="32" y="78" text-anchor="end" font-size="11" font-weight="bold" fill="#334155">4 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> SA = 2(lw + lh + wh)<br><strong>Calculation:</strong> SA = 2(8×5 + 8×4 + 5×4) = 2(40 + 32 + 20) = 2(92) = <strong>184 cm²</strong>"
+            },
+            {
+                id: 19,
+                topic: "Surface Area",
+                title: "Calculate the total surface area of a right triangular prism. The triangular cross-section has sides 3 cm, 4 cm, 5 cm (height = 3 cm, base = 4 cm). The prism length is 10 cm.",
+                unit: "cm²",
+                correctAnswer: 132,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="30,90 30,50 70,90" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><polygon points="30,50 130,20 170,60 70,90" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/><line x1="70" y1="90" x2="170" y2="60" stroke="#16a34a" stroke-width="2"/><text x="45" y="102" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">4 cm</text><text x="22" y="70" text-anchor="end" font-size="11" font-weight="bold" fill="#334155">3 cm</text><text x="110" y="35" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">L = 10 cm</text></svg>`,
+                solution: "<strong>Triangular Ends Area (2):</strong> 2 × (½ × 4 × 3) = 12 cm²<br><strong>3 Rectangular Faces:</strong> (3×10) + (4×10) + (5×10) = 30 + 40 + 50 = 120 cm²<br><strong>Total Surface Area:</strong> 12 + 120 = <strong>132 cm²</strong>"
+            },
+            {
+                id: 20,
+                topic: "Surface Area",
+                title: "A square-based pyramid has a base side of 6 cm and a slant height of 8 cm for each triangular face. Calculate its total surface area.",
+                unit: "cm²",
+                correctAnswer: 132,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="50,100 130,100 160,80 80,80" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><polygon points="50,100 130,100 105,20" fill="#86efac" stroke="#16a34a" stroke-width="2"/><polygon points="130,100 160,80 105,20" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/><text x="90" y="115" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">6 cm</text><text x="130" y="55" text-anchor="start" font-size="11" font-weight="bold" fill="#dc2626">slant = 8 cm</text></svg>`,
+                solution: "<strong>Base Area:</strong> 6 × 6 = 36 cm²<br><strong>4 Triangular Faces:</strong> 4 × (½ × 6 × 8) = 4 × 24 = 96 cm²<br><strong>Total Surface Area:</strong> 36 + 96 = <strong>132 cm²</strong>"
+            },
+            {
+                id: 21,
+                topic: "Surface Area",
+                title: "Calculate the curved surface area of a cylinder with radius r = 5 cm and height h = 12 cm. (Use π = 3.14)",
+                unit: "cm²",
+                correctAnswer: 376.8,
+                tolerance: 0.1,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><ellipse cx="100" cy="30" rx="45" ry="15" fill="#86efac" stroke="#16a34a" stroke-width="2"/><path d="M 55,30 L 55,100 A 45,15 0 0,0 145,100 L 145,30 Z" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="100" y="32" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">r = 5 cm</text><text x="153" y="65" text-anchor="start" font-size="11" font-weight="bold" fill="#334155">h = 12 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Curved Surface Area = 2 × π × r × h<br><strong>Calculation:</strong> CSA = 2 × 3.14 × 5 × 12 = 31.4 × 12 = <strong>376.8 cm²</strong>"
+            },
+            {
+                id: 22,
+                topic: "Surface Area",
+                title: "Work out the TOTAL surface area (curved surface + 2 circular bases) of a closed cylinder with radius r = 7 cm and height h = 10 cm. (Use π = 22/7)",
+                unit: "cm²",
+                correctAnswer: 748,
+                tolerance: 0.5,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><ellipse cx="100" cy="30" rx="45" ry="15" fill="#86efac" stroke="#16a34a" stroke-width="2"/><path d="M 55,30 L 55,100 A 45,15 0 0,0 145,100 L 145,30 Z" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="100" y="32" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">r = 7 cm</text><text x="153" y="65" text-anchor="start" font-size="11" font-weight="bold" fill="#334155">h = 10 cm</text></svg>`,
+                solution: "<strong>2 Circular Bases Area:</strong> 2 × [(22/7) × 7²] = 2 × 154 = 308 cm²<br><strong>Curved Surface Area:</strong> 2 × (22/7) × 7 × 10 = 440 cm²<br><strong>Total Surface Area:</strong> 308 + 440 = <strong>748 cm²</strong>"
+            },
+            {
+                id: 23,
+                topic: "Surface Area",
+                title: "An open-top box (no lid) in the shape of a cube has an edge length of 4 cm. Calculate its external surface area.",
+                unit: "cm²",
+                correctAnswer: 80,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="50,50 100,50 100,100 50,100" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><polygon points="100,50 130,30 130,80 100,100" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/><text x="75" y="115" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">4 cm (Open Top)</text></svg>`,
+                solution: "<strong>Note:</strong> An open-top cube has only 5 square faces.<br><strong>Calculation:</strong> SA = 5 × s² = 5 × (4²) = 5 × 16 = <strong>80 cm²</strong>"
+            },
+
+            // VOLUME 3D (24-30)
+            {
+                id: 24,
+                topic: "Volume",
+                title: "Calculate the volume of a cube with edge length of 6 cm.",
+                unit: "cm³",
+                correctAnswer: 216,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="50,40 100,40 100,90 50,90" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/><polygon points="100,40 130,20 130,70 100,90" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/><polygon points="50,40 80,20 130,20 100,40" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/><text x="75" y="105" text-anchor="middle" font-size="12" font-weight="bold" fill="#334155">6 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Volume = Side³<br><strong>Calculation:</strong> V = 6³ = 6 × 6 × 6 = <strong>216 cm³</strong>"
+            },
+            {
+                id: 25,
+                topic: "Volume",
+                title: "Find the volume of a cuboid with length 12 cm, width 5 cm, and height 7 cm.",
+                unit: "cm³",
+                correctAnswer: 420,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="40,50 120,50 120,100 40,100" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/><polygon points="120,50 160,25 160,75 120,100" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/><polygon points="40,50 80,25 160,25 120,50" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/><text x="80" y="115" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">12 cm</text><text x="145" y="95" text-anchor="start" font-size="11" font-weight="bold" fill="#334155">5 cm</text><text x="32" y="78" text-anchor="end" font-size="11" font-weight="bold" fill="#334155">7 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Volume = length × width × height<br><strong>Calculation:</strong> V = 12 × 5 × 7 = 60 × 7 = <strong>420 cm³</strong>"
+            },
+            {
+                id: 26,
+                topic: "Volume",
+                title: "Work out the volume of a triangular prism. The triangular face has a base of 8 cm and vertical height of 5 cm. The prism length is 15 cm.",
+                unit: "cm³",
+                correctAnswer: 300,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="30,90 30,50 70,90" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/><polygon points="30,50 130,20 170,60 70,90" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/><text x="50" y="102" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">base = 8 cm</text><text x="22" y="70" text-anchor="end" font-size="11" font-weight="bold" fill="#334155">h = 5 cm</text><text x="110" y="35" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">L = 15 cm</text></svg>`,
+                solution: "<strong>Base Area:</strong> ½ × 8 × 5 = 20 cm²<br><strong>Volume:</strong> Base Area × Length = 20 × 15 = <strong>300 cm³</strong>"
+            },
+            {
+                id: 27,
+                topic: "Volume",
+                title: "Calculate the volume of a cylinder with radius r = 4 cm and height h = 10 cm. (Use π = 3.14)",
+                unit: "cm³",
+                correctAnswer: 502.4,
+                tolerance: 0.1,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><ellipse cx="100" cy="30" rx="45" ry="15" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/><path d="M 55,30 L 55,100 A 45,15 0 0,0 145,100 L 145,30 Z" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/><text x="100" y="32" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">r = 4 cm</text><text x="153" y="65" text-anchor="start" font-size="11" font-weight="bold" fill="#334155">h = 10 cm</text></svg>`,
+                solution: "<strong>Formula:</strong> Volume = π × r² × h<br><strong>Calculation:</strong> V = 3.14 × (4²) × 10 = 3.14 × 16 × 10 = <strong>502.4 cm³</strong>"
+            },
+            {
+                id: 28,
+                topic: "Volume",
+                title: "Find the volume of a cylinder with diameter d = 14 cm and height h = 8 cm. (Use π = 22/7)",
+                unit: "cm³",
+                correctAnswer: 1232,
+                tolerance: 0.5,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><ellipse cx="100" cy="30" rx="45" ry="15" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/><path d="M 55,30 L 55,100 A 45,15 0 0,0 145,100 L 145,30 Z" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/><text x="100" y="32" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">d = 14 cm</text><text x="153" y="65" text-anchor="start" font-size="11" font-weight="bold" fill="#334155">h = 8 cm</text></svg>`,
+                solution: "<strong>Step 1:</strong> Radius = 14 / 2 = 7 cm<br><strong>Step 2:</strong> Volume = π × r² × h = (22/7) × 7 × 7 × 8 = 154 × 8 = <strong>1232 cm³</strong>"
+            },
+            {
+                id: 29,
+                topic: "Volume",
+                title: "A cuboid tank has a volume of 360 cm³. If its length is 10 cm and width is 6 cm, find its height.",
+                unit: "cm",
+                correctAnswer: 6,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><polygon points="40,50 120,50 120,100 40,100" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/><polygon points="120,50 160,25 160,75 120,100" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/><text x="80" y="115" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">10 cm</text><text x="145" y="95" text-anchor="start" font-size="11" font-weight="bold" fill="#334155">6 cm</text><text x="32" y="78" text-anchor="end" font-size="11" font-weight="bold" fill="#dc2626">h = ?</text></svg>`,
+                solution: "<strong>Formula:</strong> Volume = length × width × height<br><strong>Calculation:</strong> 360 = 10 × 6 × h → 360 = 60 × h → h = 360 / 60 = <strong>6 cm</strong>"
+            },
+            {
+                id: 30,
+                topic: "Volume",
+                title: "A composite prism is formed by stacking a cube (edge 4 cm) on top of a larger cuboid (8 cm × 5 cm × 4 cm). Calculate the total volume.",
+                unit: "cm³",
+                correctAnswer: 224,
+                tolerance: 0.01,
+                svg: `<svg viewBox="0 0 200 140" class="w-48 h-32"><rect x="50" y="70" width="100" height="40" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/><rect x="80" y="30" width="40" height="40" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/><text x="100" y="95" text-anchor="middle" font-size="10" font-weight="bold" fill="#334155">Cuboid: 8×5×4</text><text x="100" y="55" text-anchor="middle" font-size="10" font-weight="bold" fill="#334155">Cube: 4³</text></svg>`,
+                solution: "<strong>Volume of Cuboid:</strong> 8 × 5 × 4 = 160 cm³<br><strong>Volume of Cube:</strong> 4 × 4 × 4 = 64 cm³<br><strong>Total Volume:</strong> 160 + 64 = <strong>224 cm³</strong>"
+            }
+        ];
+
+        // -------------------------------------------------------------
+        // App State & LocalStorage Persistence
+        // -------------------------------------------------------------
+        let currentIndex = 0;
+        let activeFilter = 'all';
+        const STORAGE_KEY = 'cambridge_g7_geometry_quiz_v1';
+
+        // User attempt store format: { [qId]: { userAnswer: number, isCorrect: boolean, attempted: boolean } }
+        let userState = {};
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    userState = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error("Could not load progress from LocalStorage", e);
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(userState));
+            } catch (e) {
+                console.error("Could not save progress to LocalStorage", e);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // Rendering Functions
+        // -------------------------------------------------------------
+        function initApp() {
+            loadState();
+            renderGrid();
+            renderQuestion(currentIndex);
+            updateOverviewStats();
+        }
+
+        function updateOverviewStats() {
+            let totalAnswered = 0;
+            let totalCorrect = 0;
+
+            questionsData.forEach(q => {
+                const st = userState[q.id];
+                if (st && st.attempted) {
+                    totalAnswered++;
+                    if (st.isCorrect) totalCorrect++;
+                }
+            });
+
+            document.getElementById('score-display').innerText = `${totalCorrect}/30`;
+            document.getElementById('answered-display').innerText = `${totalAnswered}/30`;
+
+            const topProgress = (totalAnswered / 30) * 100;
+            document.getElementById('top-progress-bar').style.width = `${topProgress}%`;
+
+            const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+            document.getElementById('accuracy-percentage').innerText = `${accuracy}%`;
+            document.getElementById('accuracy-bar').style.width = `${accuracy}%`;
+        }
+
+        function renderGrid() {
+            const gridContainer = document.getElementById('question-grid');
+            gridContainer.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const st = userState[q.id];
+
+                // Filter logic
+                if (activeFilter === 'pending' && st && st.attempted) return;
+                if (activeFilter === 'done' && (!st || !st.attempted)) return;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.innerText = q.id;
+
+                let classes = "h-10 w-full rounded-xl font-bold text-xs transition flex items-center justify-center border ";
+
+                if (idx === currentIndex) {
+                    classes += "ring-2 ring-indigo-600 ring-offset-1 ";
+                }
+
+                if (st && st.attempted) {
+                    if (st.isCorrect) {
+                        classes += "bg-emerald-500 text-white border-emerald-600 shadow-xs";
+                    } else {
+                        classes += "bg-rose-500 text-white border-rose-600 shadow-xs";
+                    }
+                } else {
+                    classes += "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100";
+                }
+
+                btn.className = classes;
+                btn.onclick = () => {
+                    currentIndex = idx;
+                    renderGrid();
+                    renderQuestion(currentIndex);
+                };
+
+                gridContainer.appendChild(btn);
+            });
+        }
+
+        function renderQuestion(index) {
+            const q = questionsData[index];
+            const st = userState[q.id];
+
+            // Headers & Topic
+            document.getElementById('topic-badge').innerText = q.topic;
+            document.getElementById('question-number-badge').innerText = `Question ${q.id} of 30`;
+            document.getElementById('question-title').innerText = q.title;
+            document.getElementById('unit-label').innerText = q.unit;
+            document.getElementById('svg-container').innerHTML = q.svg;
+
+            // Input element & form resetting
+            const inputEl = document.getElementById('user-input');
+            const submitBtn = document.getElementById('submit-btn');
+            const statusBadge = document.getElementById('status-badge');
+            const feedbackFrame = document.getElementById('feedback-frame');
+
+            inputEl.value = st && st.userAnswer !== undefined ? st.userAnswer : '';
+
+            // Status Badge & Solution display state
+            if (st && st.attempted) {
+                if (st.isCorrect) {
+                    statusBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200";
+                    statusBadge.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Correct`;
+                } else {
+                    statusBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200";
+                    statusBadge.innerHTML = `<i class="fa-solid fa-xmark mr-1"></i> Incorrect`;
+                }
+                showFeedback(st.isCorrect, q.solution, false);
+            } else {
+                statusBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600";
+                statusBadge.innerText = "Unanswered";
+                feedbackFrame.className = "hidden";
+            }
+
+            // Navigation Button States
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('prev-btn').style.opacity = index === 0 ? "0.4" : "1";
+
+            document.getElementById('next-btn').disabled = index === questionsData.length - 1;
+            document.getElementById('next-btn').style.opacity = index === questionsData.length - 1 ? "0.4" : "1";
+        }
+
+        function handleAnswerSubmit(e) {
+            e.preventDefault();
+            const q = questionsData[currentIndex];
+            const inputVal = parseFloat(document.getElementById('user-input').value);
+
+            if (isNaN(inputVal)) return;
+
+            // Validation with tolerance
+            const isCorrect = Math.abs(inputVal - q.correctAnswer) <= (q.tolerance || 0.01);
+
+            // Save state
+            userState[q.id] = {
+                userAnswer: inputVal,
+                isCorrect: isCorrect,
+                attempted: true
+            };
+
+            saveState();
+            playSound(isCorrect ? 'correct' : 'incorrect');
+
+            renderQuestion(currentIndex);
+            renderGrid();
+            updateOverviewStats();
+        }
+
+        function showFeedback(isCorrect, solutionHtml, playAudio = true) {
+            const frame = document.getElementById('feedback-frame');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const solutionDiv = document.getElementById('worked-solution');
+
+            frame.classList.remove('hidden');
+
+            if (isCorrect) {
+                frame.className = "space-y-4 rounded-xl p-5 border bg-emerald-50 border-emerald-200 text-emerald-900";
+                icon.className = "fa-solid fa-circle-check text-emerald-600 text-xl";
+                title.innerText = "Correct! Well done.";
+            } else {
+                frame.className = "space-y-4 rounded-xl p-5 border bg-rose-50 border-rose-200 text-rose-900";
+                icon.className = "fa-solid fa-circle-xmark text-rose-600 text-xl";
+                title.innerText = "Incorrect. Let's review the steps below:";
+            }
+
+            solutionDiv.innerHTML = solutionHtml;
+        }
+
+        function navigateQuestion(step) {
+            const newIndex = currentIndex + step;
+            if (newIndex >= 0 && newIndex < questionsData.length) {
+                currentIndex = newIndex;
+                renderGrid();
+                renderQuestion(currentIndex);
+            }
+        }
+
+        function filterGrid(filter) {
+            activeFilter = filter;
+            ['all', 'pending', 'done'].forEach(f => {
+                const el = document.getElementById(`filter-${f}`);
+                if (f === filter) {
+                    el.className = "flex-1 py-1 rounded-lg text-center bg-white shadow-xs font-semibold text-slate-800";
+                } else {
+                    el.className = "flex-1 py-1 rounded-lg text-center text-slate-600 hover:text-slate-900";
+                }
+            });
+            renderGrid();
+        }
+
+        function confirmReset() {
+            if (confirm("Are you sure you want to reset all your progress and start over?")) {
+                userState = {};
+                saveState();
+                currentIndex = 0;
+                initApp();
+            }
+        }
+
+        // Initialize on window load
+        window.onload = function() {
+            initApp();
+        };
+    </script>
+</body>
+</html>
